@@ -1,4 +1,4 @@
-module timw/isilon/goppstats
+module stephane/isilon/goclientstats
 
 go 1.18
 

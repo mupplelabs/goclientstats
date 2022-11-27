@@ -12,7 +12,7 @@ import (
 
 // Version is the released program version
 const Version = "0.01"
-const userAgent = "goppstats/" + Version
+const userAgent = "goclientstats/" + Version
 
 const PPSampleRate = 30 // Only poll once every 30s
 
@@ -22,13 +22,13 @@ const (
 )
 const defaultAuthType = authtypeSession
 
-var log = logging.MustGetLogger("goppstats")
+var log = logging.MustGetLogger("goclientstats")
 
 type loglevel logging.Level
 
-var logFileName = flag.String("logfile", "./goppstats.log", "pathname of log file")
+var logFileName = flag.String("logfile", "./goclientstats.log", "pathname of log file")
 var logLevel = loglevel(logging.NOTICE)
-var configFileName = flag.String("config-file", "goppstats.toml", "pathname of config file")
+var configFileName = flag.String("config-file", "goclientstats.toml", "pathname of config file")
 
 func (l *loglevel) String() string {
 	level := logging.Level(*l)
@@ -54,7 +54,7 @@ func init() {
 func setupLogging() {
 	f, err := os.OpenFile(*logFileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "goppstats: unable to open log file %s for output - %s", *logFileName, err)
+		fmt.Fprintf(os.Stderr, "goclientstats: unable to open log file %s for output - %s", *logFileName, err)
 		os.Exit(2)
 	}
 	backend := logging.NewLogBackend(f, "", 0)
@@ -75,7 +75,7 @@ func main() {
 	setupLogging()
 
 	// announce ourselves
-	log.Noticef("Starting goppstats version %s", Version)
+	log.Noticef("Starting goclientstats version %s", Version)
 
 	// read in our config
 	conf := mustReadConfig()
