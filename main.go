@@ -14,8 +14,6 @@ import (
 const Version = "0.01"
 const userAgent = "goclientstats/" + Version
 
-const PPSampleRate = 30 // Only poll once every 30s
-
 const (
 	authtypeBasic   = "basic-auth"
 	authtypeSession = "session"
@@ -145,9 +143,11 @@ func statsloop(cluster clusterConf, gc globalConfig) {
 
 	// loop collecting and pushing stats
 	log.Infof("Starting stat collection loop for cluster %s", c.ClusterName)
+
 	for {
+		//default update interval is 30s, set per MinUpdateInvtl in global config toml.
 		curTime := time.Now()
-		nextTime := curTime.Add(time.Second * PPSampleRate)
+		nextTime := curTime.Add(time.Second * time.Duration(gc.MinUpdateInvtl))
 
 		// Collect one set of stats
 		log.Infof("Cluster %s start collecting client summary stats", c.ClusterName)
