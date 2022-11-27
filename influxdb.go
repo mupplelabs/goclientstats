@@ -108,7 +108,7 @@ func (s *InfluxDBSink) FieldsForCSstat(csstat clientSummaryResult) ptFields {
 	fields["in_max"] = csstat.In_max
 	fields["in_min"] = csstat.In_min
 	fields["num_ops"] = csstat.Num_operations
-	fields["ops_rate"] = csstat.Out_rate
+	fields["out_rate"] = csstat.Out_rate
 	fields["out_avg"] = csstat.Out_avg
 	fields["out_max"] = csstat.Out_max
 	fields["out_min"] = csstat.Out_min

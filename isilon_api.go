@@ -52,36 +52,41 @@ type Cluster struct {
 // Some of the fields are optional and depend on the protocol in use.
 type clientSummaryResult struct {
 	//required Performance Metrix
-	In_rate        float64 `json:"in"`
-	In_avg         float64 `json:"in_avg"`
-	In_max         float64 `json:"in_max"`
-	In_min         float64 `json:"in_min"`
-	Num_operations float64 `json:"num_operations"`
-	Operation_rate float64 `json:"operation_rate"`
-	Out_rate       float64 `json:"out"`
-	Out_avg        float64 `json:"out_avg"`
-	Out_max        float64 `json:"out_max"`
-	Out_min        float64 `json:"out_min"`
-	Time_avg       float64 `json:"time_avg"`
-	Time_max       float64 `json:"time_max"`
-	Time_min       float64 `json:"time_min"`
+
+	In_rate        float64 `json:"in"`             // Rate of input (in bytes/second) for an operation since the last time isi statistics collected the data.
+	In_avg         float64 `json:"in_avg"`         // Average input (received) bytes for an operation, in bytes.
+	In_max         float64 `json:"in_max"`         // Maximum input (received) bytes for an operation, in bytes.
+	In_min         float64 `json:"in_min"`         // Minimum input (received) bytes for an operation, in bytes.
+	Num_operations float64 `json:"num_operations"` // The number of times an operation has been performed.
+	Operation_rate float64 `json:"operation_rate"` // The rate (in ops/second) at which an operation has been performed.
+	Out_rate       float64 `json:"out"`            // Rate of output (in bytes/second) for an operation since the last time isi statistics collected the data.
+	Out_avg        float64 `json:"out_avg"`        // Average output (sent) bytes for an operation, in bytes.
+	Out_max        float64 `json:"out_max"`        // Maximum output (sent) bytes for an operation, in bytes.
+	Out_min        float64 `json:"out_min"`        // Minimum output (sent) bytes for an operation, in bytes.
+	Time_avg       float64 `json:"time_avg"`       // The average elapsed time (in microseconds) taken to complete an operation.
+	Time_max       float64 `json:"time_max"`       // The maximum elapsed time (in microseconds) taken to complete an operation.
+	Time_min       float64 `json:"time_min"`       // The minimum elapsed time (in microseconds) taken to complete an operation.
+
 	// regular metadata
-	Node        int     `json:"node"`
-	Protocol    *string `json:"protocol"`
-	Class       *string `json:"class"`
-	Remote_addr *string `json:"remote_addr"`
-	Remote_name *string `json:"remote_name"`
-	Local_addr  *string `json:"local_addr"`
-	Local_name  *string `json:"local_name"`
-	Unixtime    int64   `json:"time"`
+
+	Node        int     `json:"node"`        // The node on which the operation was performed.
+	Protocol    *string `json:"protocol"`    // The protocol of the operation.
+	Class       *string `json:"class"`       // The class of the operation.
+	Remote_addr *string `json:"remote_addr"` // The IP address (in dotted-quad form) of the host sending the operation request.
+	Remote_name *string `json:"remote_name"` // The resolved text name of the RemoteAddr, if resolution can be performed.
+	Local_addr  *string `json:"local_addr"`  // The IP address (in dotted-quad form) of the host receiving the operation request.
+	Local_name  *string `json:"local_name"`  // The resolved text name of the LocalAddr, if resolution can be performed.
+	Unixtime    int64   `json:"time"`        // Unix Epoch time in seconds of the request.
+
 	// optional criteria
-	User UserInfo `json:"user"`
+
+	User UserInfo `json:"user"` // "User issuing the operation."
 }
 
 type UserInfo struct {
-	Type *string `json:"type"`
-	Name *string `json:"name"`
-	Uid  *string `json:"id"`
+	Type *string `json:"type"` // Specifies the type of persona, which must be combined with a name. string of [user, group, wellknown] or NIL
+	Name *string `json:"name"` // Specifies the persona name, which must be combined with a type.
+	Uid  *string `json:"id"`   // Specifies the serialized form of a persona, which can be 'UID:0', 'USER:name', 'GID:0', 'GROUP:wheel', or 'SID:S-1-1'.
 }
 
 // clientSummaryQuery describes the result from calling the client summary endpoint
