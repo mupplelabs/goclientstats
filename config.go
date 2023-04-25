@@ -13,11 +13,15 @@ import (
 // If not overridden, we will only poll every minUpdateInterval seconds
 const defaultMinUpdateInterval = 30
 
-// Default retry limit
+// Default retry limits
 const defaultMaxRetries = 8
+const ProcessordefaultMaxRetries = 5
 
 // Default Normalizaion of ClusterNames
 const defaultNormalize = true
+
+// Default protocols to gather
+const defaultProtocols = "all"
 
 // config file structures
 type tomlConfig struct {
@@ -27,12 +31,14 @@ type tomlConfig struct {
 }
 
 type globalConfig struct {
-	Processor        string   `toml:"stats_processor"`
-	ProcessorArgs    []string `toml:"stats_processor_args"`
-	ActiveStatGroups []string `toml:"active_stat_groups"`
-	MinUpdateInvtl   int      `toml:"min_update_interval_override"`
-	maxRetries       int      `toml:"max_retries"`
-	normalize        bool     `toml:"normalize"`
+	Processor           string   `toml:"stats_processor"`
+	ProcessorArgs       []string `toml:"stats_processor_args"`
+	ProcessorMaxRetries int      `toml:"stats_processor_max_retries"`
+	ActiveStatGroups    []string `toml:"active_stat_groups"`
+	MinUpdateInvtl      int      `toml:"min_update_interval_override"`
+	maxRetries          int      `toml:"max_retries"`
+	normalize           bool     `toml:"normalize"`
+	ProtoList           string   `toml:"protocols"`
 }
 
 type clusterConf struct {
@@ -49,6 +55,8 @@ func mustReadConfig() tomlConfig {
 	conf.Global.maxRetries = defaultMaxRetries
 	conf.Global.MinUpdateInvtl = defaultMinUpdateInterval
 	conf.Global.normalize = defaultNormalize
+	conf.Global.ProcessorMaxRetries = ProcessordefaultMaxRetries
+	conf.Global.ProtoList = defaultProtocols
 	_, err := toml.DecodeFile(*configFileName, &conf)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%s: unable to read config file %s, exiting\n", os.Args[0], *configFileName)
@@ -58,6 +66,10 @@ func mustReadConfig() tomlConfig {
 	}
 	// If retries is 0 or negative, make it effectively infinite
 	if conf.Global.maxRetries <= 0 {
+		conf.Global.maxRetries = math.MaxInt
+	}
+
+	if conf.Global.ProcessorMaxRetries < 0 {
 		conf.Global.maxRetries = math.MaxInt
 	}
 

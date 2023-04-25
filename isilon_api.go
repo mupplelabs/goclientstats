@@ -45,6 +45,7 @@ type Cluster struct {
 	reauthTime  time.Time
 	maxRetries  int
 	normalize   bool
+	ProtoList   string
 }
 
 // clientSummaryResult contains the information returned for a single Client entry
@@ -274,7 +275,7 @@ func (c *Cluster) Connect() error {
 func (c *Cluster) GetClientStats() ([]clientSummaryResult, error) {
 	var results []clientSummaryResult
 
-	basePath := clientSummaryPath + "?degraded=true&nodes=all"
+	basePath := clientSummaryPath + "?degraded=true&nodes=all&protocols=" + c.ProtoList
 	// Need special case for short last get
 	log.Infof("fetching Client Summary stats from cluster %s", c.ClusterName)
 	// log.Debugf("cluster %s fetching %s", c.ClusterName, buffer.String())

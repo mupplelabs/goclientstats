@@ -122,6 +122,7 @@ func statsloop(cluster clusterConf, gc globalConfig) {
 		Port:       8080,
 		VerifySSL:  cluster.SSLCheck,
 		maxRetries: gc.maxRetries,
+		ProtoList:  gc.ProtoList,
 	}
 	if err = c.Connect(); err != nil {
 		log.Errorf("Connection to cluster %s failed: %v", c.Hostname, err)
@@ -170,9 +171,18 @@ func statsloop(cluster clusterConf, gc globalConfig) {
 
 		log.Infof("Got %d client summary entries", len(sr))
 		log.Infof("Cluster %s start writing stats to back end", c.ClusterName)
-		err = ss.WriteCSStats(sr)
+
+		// write stats, with retries
+		for i := 0; i < gc.ProcessorMaxRetries; i++ {
+			err = ss.WriteCSStats(sr)
+			if err == nil {
+				break
+			}
+			// Sleep for 60s
+			time.Sleep(60 * time.Second)
+		}
+
 		if err != nil {
-			// TODO maybe implement backoff/error-handling here?
 			log.Errorf("Failed to write stats to database: %s", err)
 			return
 		}

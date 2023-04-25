@@ -15,6 +15,11 @@ stats_processor_args = [ "localhost", "8086", "isi_data_insights" ]
 # stat_processor = "discard_plugin"
 stat_processor_args = []
 
+# Retries in case error during stats write to stat_processor
+# if set to -1 it will be retried indefinetly.
+# Default is still 5 retries. Uncomment the following to disable retries.
+# stats_processor_max_retries = 0
+
 # If set to 0 or -1, authentication will be retried indefintely
 # There is still an exponential backoff that is clamped to a maximum of
 # 30 minutes.
@@ -33,6 +38,14 @@ min_update_interval_override = 5
 
 # normalize cluster names to lowercase, defaults to true.
 normalize = false
+
+# Filter for client protocols to collect
+# A comma separated list (no whitespace allowed!). 
+# (nfs3 | smb1 | nlm | ftp | http | siq | smb2 | nfs4 | nfsrdma | papi | jobd | irp | lsass_out | hdfs | s3 | internal | external)
+# Default is "all". 
+#
+# Uncomment to include administrative protocols such as "lsass_out":
+protocols = "nfs3,nfs4,nfsrdma,smb1,smb2,hdfs,s3,http,papi,lsass_out,jobd,irp"
 
 # clusters in this section are queried for all stat groups
 # clusters: [username1:password1@]<ip-or-host-address1>[:True|False]

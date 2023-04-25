@@ -142,15 +142,5 @@ func (s *InfluxDBSink) TagsForCSStat(csstat clientSummaryResult) ptTags {
 	if csstat.User.Uid != nil {
 		tags["user_id"] = *csstat.User.Uid
 	}
-
 	return tags
-}
-
-// helper function
-func ptmapCopy(tags ptTags) ptTags {
-	copy := ptTags{}
-	for k, v := range tags {
-		copy[k] = v
-	}
-	return copy
 }
